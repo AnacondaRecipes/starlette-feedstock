@@ -1,5 +1,5 @@
 {% set name = "starlette" %}
-{% set version = "0.17.0" %}
+{% set version = "0.27.0" %}
 
 package:
   name: {{ name|lower }}-recipe
@@ -7,42 +7,55 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 31a889e7d7bf487f70d9d197ed7efadb47fa938c58626ed93e381480833c5b84
+  sha256: 6a6b0d042acb8d469a01eba54e9cda6cbd24ac602c4cd016723117d6a7e73b75
 
 build:
   number: 0
+  skip: true  # [py<37]
+
+requirements:
+  host:
+    - python
+    - pip
+    - hatchling
 
 outputs:
   - name: {{ name }}
     build:
-      noarch: python
-    script: build_base.sh
+      script: python -m pip install . --no-deps --no-build-isolation -vv
     requirements:
       host:
-        - python >=3.6
+        - python
         - pip
+        - hatchling
       run:
-        - python >=3.6
-        - anyio >=3.0.0,<4.0.0a
+        - python
+        - anyio >=3.4.0,<5
+        - typing_extensions >=3.10.0  # [py<310]
     test:
+      imports:
+        - starlette
+      requires:
+        - pip
       commands:
-        - python -c "from starlette import *"
+        - pip check
 
   - name: {{ name }}-full
     build:
-      noarch: python
+      script: echo Nothing to do.
     requirements:
       host:
-        - python >=3.6
+        - python
         - pip
+        - hatchling
       run:
-        - python >=3.6
+        - python
         - {{ pin_subpackage('starlette', exact=True) }}
         - itsdangerous
         - jinja2
         - python-multipart
         - pyyaml
-        - requests
+        - httpx >=0.22.0
     test:
       commands:
         - python -c "from starlette import *"
@@ -52,10 +65,9 @@ about:
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.md
-  summary: The little ASGI framework that shines. ✨
+  summary: The little ASGI framework that shines
   description: |
-    Starlette is a lightweight [ASGI](https://asgi.readthedocs.io/en/latest/)
-    framework/toolkit.
+    Starlette is a lightweight [ASGI](https://asgi.readthedocs.io/en/latest/) framework/toolkit.
 
     It is ideal for building high performance asyncio services, and supports
     both HTTP and WebSockets.
