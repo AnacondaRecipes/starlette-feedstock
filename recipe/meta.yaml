@@ -43,6 +43,8 @@ outputs:
   - name: {{ name }}-full
     build:
       script: echo Nothing to do.
+      # httpx isn't available on s390x
+      skip: true  # [s390x]
     requirements:
       host:
         - python
