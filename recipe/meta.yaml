@@ -49,7 +49,6 @@ outputs:
       host:
         - python
         - pip
-        - hatchling
       run:
         - python
         - {{ pin_subpackage('starlette', exact=True) }}
