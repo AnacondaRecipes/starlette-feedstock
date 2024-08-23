@@ -1,5 +1,5 @@
 {% set name = "starlette" %}
-{% set version = "0.27.0" %}
+{% set version = "0.38.2" %}
 
 package:
   name: {{ name|lower }}-recipe
@@ -7,11 +7,11 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 6a6b0d042acb8d469a01eba54e9cda6cbd24ac602c4cd016723117d6a7e73b75
+  sha256: c7c0441065252160993a1a37cf2a73bb64d271b17303e0b0c1eb7191cfb12d75
 
 build:
   number: 0
-  skip: true  # [py<37]
+  skip: true  # [py<38]
 
 requirements:
   host:
@@ -54,7 +54,7 @@ outputs:
         - {{ pin_subpackage('starlette', exact=True) }}
         - itsdangerous
         - jinja2
-        - python-multipart
+        - python-multipart >=0.0.7
         - pyyaml
         - httpx >=0.22.0
     test:
