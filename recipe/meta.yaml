@@ -1,5 +1,6 @@
 {% set name = "starlette" %}
-{% set version = "0.38.2" %}
+{% set version = "0.37.2" %}
+
 
 package:
   name: {{ name|lower }}-recipe
@@ -7,50 +8,41 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: c7c0441065252160993a1a37cf2a73bb64d271b17303e0b0c1eb7191cfb12d75
+  sha256: 9af890290133b79fc3db55474ade20f6220a364a0402e0b556e7cd5e1e093823
 
 build:
   number: 0
-  skip: true  # [py<38]
-
-requirements:
-  host:
-    - python
-    - pip
-    - hatchling
+  noarch: python
 
 outputs:
   - name: {{ name }}
     build:
       script: python -m pip install . --no-deps --no-build-isolation -vv
+      noarch: python
     requirements:
       host:
-        - python
-        - pip
         - hatchling
-      run:
-        - python
-        - anyio >=3.4.0,<5
-        - typing_extensions >=3.10.0  # [py<310]
-    test:
-      imports:
-        - starlette
-      requires:
+        - python >=3.8
         - pip
+      run:
+        - python >=3.8
+        - anyio <5,>=3.4.0
+        - typing_extensions >=3.10.0
+    test:
       commands:
-        - pip check
+        - python -c "from starlette import *"
 
   - name: {{ name }}-full
     build:
       script: echo Nothing to do.
-      # httpx isn't available on s390x
-      skip: true  # [s390x]
+      noarch: python
     requirements:
       host:
-        - python
+        - hatchling
+        - python >=3.8
         - pip
       run:
-        - python
+        - python >=3.8
         - {{ pin_subpackage('starlette', exact=True) }}
         - itsdangerous
         - jinja2
@@ -66,9 +58,10 @@ about:
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.md
-  summary: The little ASGI framework that shines
+  summary: The little ASGI framework that shines.
   description: |
-    Starlette is a lightweight [ASGI](https://asgi.readthedocs.io/en/latest/) framework/toolkit.
+    Starlette is a lightweight [ASGI](https://asgi.readthedocs.io/en/latest/)
+    framework/toolkit.
 
     It is ideal for building high performance asyncio services, and supports
     both HTTP and WebSockets.
@@ -76,6 +69,12 @@ about:
   dev_url: https://github.com/encode/starlette/
 
 extra:
+  anaconda-services:
+    ref: https://anaconda.zendesk.com/agent/tickets/49522
+    reason: Dependency for chainlit
+  recipe-maintainers:
+    - ianaobi
   recipe-maintainers:
     - carlodri
     - dgasmith
+    - thewchan
