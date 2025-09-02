@@ -1,13 +1,13 @@
 {% set name = "starlette" %}
-{% set version = "0.46.2" %}
+{% set version = "0.47.3" %}
 
 package:
   name: {{ name|lower }}-recipe
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 7f7361f34eed179294600af672f565727419830b54b7b084efe44bb82d2fccd5
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 6bc94f839cc176c4858894f1f8908f0ab79dfec1a6b8402f6da9be26ebea52e9
 
 build:
   number: 0
@@ -31,7 +31,7 @@ outputs:
       run:
         - python
         - anyio >=3.6.2,<5
-        - typing_extensions >=3.10.0  # [py<310]
+        - typing_extensions >=4.10.0  # [py<313]
     test:
       imports:
         - starlette
