@@ -11,7 +11,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<39]
+  skip: true  # [py<310]
 
 requirements:
   host:
@@ -39,6 +39,7 @@ outputs:
         - pip
       commands:
         - pip check
+        
   - name: {{ name }}-full
     build:
       script: echo Nothing to do.
@@ -55,28 +56,35 @@ outputs:
         - pyyaml
         - httpx >=0.27.0,<0.29.0
     test:
+      source_files:
+        - tests
       imports:
         - starlette
       requires:
         - pip
-        - python
+        - pytest >=8.4.0
+        - sniffio
+        # https://github.com/Kludex/starlette/blob/0.52.1/docs/release-notes.md?plain=1#L9
+        # typing-extensions is still needed for tests for all python versions
+        - typing_extensions >=4.10.0  # [py>=313]
+        - trio >=0.30.0
       commands:
         - pip check
         - python -c "from starlette import *"
+        - pytest -v tests
 
 about:
-  home: https://www.starlette.io/
+  home: https://www.starlette.io
   license: BSD-3-Clause
   license_family: BSD
   license_file: LICENSE.md
   summary: The little ASGI framework that shines
   description: |
     Starlette is a lightweight [ASGI](https://asgi.readthedocs.io/en/latest/) framework/toolkit.
-
     It is ideal for building high performance asyncio services, and supports
     both HTTP and WebSockets.
-  doc_url: https://www.starlette.io/
-  dev_url: https://github.com/encode/starlette/
+  doc_url: https://www.starlette.io
+  dev_url: https://github.com/encode/starlette
 
 extra:
   recipe-maintainers:
