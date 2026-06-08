@@ -1,5 +1,9 @@
 {% set name = "starlette" %}
-{% set version = "0.52.1" %}
+{% set version = "1.2.1" %}
+{% set deselect_tests = "" %}
+{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_config.py::test_missing_env_file_raises"' %}  # [win]
+{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_staticfiles.py::test_staticfiles_with_invalid_dir_permissions_returns_401"' %}  # [win]
+{% set deselect_tests = 'deselect_tests + " --deselect=tests/test_staticfiles.py::test_staticfiles_filename_too_long"' %}  # [win]
 
 package:
   name: {{ name|lower }}-recipe
@@ -7,7 +11,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 834edd1b0a23167694292e94f597773bc3f89f362be6effee198165a35d62933
+  sha256: 9b9b5ebb992e67d6093741e63c2f59e4f6fff986f81163c087867bd7b924b3f6
 
 build:
   number: 0
@@ -39,7 +43,6 @@ outputs:
         - pip
       commands:
         - pip check
-        
   - name: {{ name }}-full
     build:
       script: echo Nothing to do.
@@ -71,15 +74,20 @@ outputs:
       commands:
         - pip check
         - python -c "from starlette import *"
-        {% set deselect_tests = "" %}
         # > raise source.error("incomplete escape %s" % escape, len(escape))
         # E re.PatternError: incomplete escape \U at position 15
-        {% set deselect_tests = deselect_tests + " --deselect=tests/test_config.py::test_missing_env_file_raises" %}  # [win]
         # E +  where 200 = <Response [200 OK]>.status_code
-        {% set deselect_tests = deselect_tests + " --deselect=tests/test_staticfiles.py::test_staticfiles_with_invalid_dir_permissions_returns_401" %}  # [win]
         # E AttributeError: module 'os' has no attribute 'pathconf'
-        {% set deselect_tests = deselect_tests + " --deselect=tests/test_staticfiles.py::test_staticfiles_filename_too_long" %}  # [win]
         - pytest -v tests {{ deselect_tests }}
+
+test:
+  commands:
+    - pip check
+    - pip check
+    - pip check
+    - pip check
+  requires:
+    - pip
 
 about:
   home: https://www.starlette.io
