@@ -1,5 +1,5 @@
 {% set name = "starlette" %}
-{% set version = "0.52.1" %}
+{% set version = "1.2.1" %}
 
 package:
   name: {{ name|lower }}-recipe
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 834edd1b0a23167694292e94f597773bc3f89f362be6effee198165a35d62933
+  sha256: 9b9b5ebb992e67d6093741e63c2f59e4f6fff986f81163c087867bd7b924b3f6
 
 build:
   number: 0
@@ -39,7 +39,6 @@ outputs:
         - pip
       commands:
         - pip check
-        
   - name: {{ name }}-full
     build:
       script: echo Nothing to do.
@@ -64,6 +63,8 @@ outputs:
         - pip
         - pytest >=8.4.0
         - sniffio
+        # httpx adds "zstd" to Accept-Encoding when zstandard is importable
+        - zstandard
         # https://github.com/Kludex/starlette/blob/0.52.1/docs/release-notes.md?plain=1#L9
         # typing-extensions is still needed for tests for all python versions
         - typing_extensions >=4.10.0  # [py>=313]
