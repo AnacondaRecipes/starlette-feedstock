@@ -63,6 +63,8 @@ outputs:
         - pip
         - pytest >=8.4.0
         - sniffio
+        # httpx adds "zstd" to Accept-Encoding when zstandard is importable
+        - zstandard
         # https://github.com/Kludex/starlette/blob/0.52.1/docs/release-notes.md?plain=1#L9
         # typing-extensions is still needed for tests for all python versions
         - typing_extensions >=4.10.0  # [py>=313]
